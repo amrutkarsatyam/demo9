@@ -5,10 +5,12 @@ pipeline {
         stage('Build') {
             steps {
                 script {
+                    bat 'docker login -u siddharthpg -p fghjkl123321Q'
+
                     // Build and push Docker image
                     bat 'docker build -t w9-dd-app:latest .'
-                    bat 'docker tag w9-dd-app:latest wilsonbolledula/w9-dh-app:latest'
-                    bat 'docker push wilsonbolledula/w9-dh-app:latest'
+                    bat 'docker tag w9-dd-app:latest siddharthpg/w9-dh-app:latest'
+                    bat 'docker push siddharthpg/w9-dh-app:latest'
                 }
             }
         }
@@ -22,21 +24,10 @@ pipeline {
         stage('Deploy') {
             steps {
                 script {
-                    // Delete and start Minikube cluster
-                    bat 'minikube delete'
                     bat 'minikube start'
-                    
-                    // Enable the dashboard addon
-                    bat 'minikube addons enable dashboard'
-                    
-                    // Apply Kubernetes resources
                     bat 'kubectl apply -f my-kube1-deployment.yaml'
                     bat 'kubectl apply -f my-kube1-service.yaml'
-                    
-                    // Expose the Kubernetes Dashboard service
-                    bat 'minikube dashboard'
-                    
-                    echo 'Deploying application...'
+                    echo '✅ Deployed successfully to Minikube!'
                 }
             }
         }
